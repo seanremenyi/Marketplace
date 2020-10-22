@@ -5,6 +5,29 @@
 This will be a marketplace community app, similar to gumtree. User's will be able to sign up and create a profile for their store (or themselves if they want). They will then be able to upload pictures about what they are trying to sell. They will tag the photos with key words to make them eaesier to search for.
 User's will be able to search or just browse the marketplace. If they find an item they like. They will be able to contact the owner.
 
+## Installing
+
+##### If using Ubuntu,
+
+1. Create a new directory and cd into it
+2. Clone git repo
+3. If not running python 3.8, run the following bash commands
+    1. `sudo apt update`
+    2. `sudo apt install python3.8`
+4. Create a virtual enviornment
+    1. `sudo apt-get install python3-pip`
+    2. `sudo apt-get install python3-venv`
+    3. `python3 -m venv venv`
+    4. `source venv/bin/activate`
+5. Install the modules in requirements.txt
+    1. `cd MarketPlace`
+    2. `cd MarketPlace`
+    3. `pip install -r requirements.txt`
+6. Run the Program
+    1. `cd src`
+    2. `python main.py`
+
+
 ## Layout
 **Sign-in/Create Page**
 
