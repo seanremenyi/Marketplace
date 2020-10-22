@@ -21,8 +21,7 @@ User's will be able to search or just browse the marketplace. If they find an it
     4. `source venv/bin/activate`
 5. Install the modules in requirements.txt
     1. `cd MarketPlace`
-    2. `cd MarketPlace`
-    3. `pip install -r requirements.txt`
+    2. `pip install -r requirements.txt`
 6. Run the Program
     1. `cd src`
     2. `python main.py`
