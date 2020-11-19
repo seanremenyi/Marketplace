@@ -1,57 +1,49 @@
-from database import cursor, connection
+from models.Items import Item
+from main import db
+from schemas.ItemSchema import item_schema, items_schema
 from flask import Blueprint, request, jsonify
 items = Blueprint('items', __name__, url_prefix="/items")
 
 @items.route("/", methods=["GET"])
 def item_index():
-    sql = "SELECT * FROM items;"
-    cursor.execute(sql)
-    items=cursor.fetchall()
-    return jsonify(items)
+    items= Item.query.all()
+    return jsonify(items_schema.dump(items))
+
 
 @items.route("/", methods=["POST"])
 def item_create():
-    sql = "INSERT INTO items (name) VALUES (%s);"
-    cursor.execute(sql, (request.json["name"],))
-    connection.commit()
+    item_fields = item_schema.load(request.json)
     
-    sql = "SELECT * FROM items ORDER BY ID DESC LIMIT 1;"
-    cursor.execute(sql)
-    item = cursor.fetchone()
-    return jsonify(item)
+    new_item = Item()
+    new_item.name = item_fields["name"]
+    
+    db.session.add(new_item)
+    db.session.commit()
+    
+    return jsonify(item_schema.dump(new_item))
 
 
 
 @items.route("/<int:id>", methods=["GET"])
 def item_show(id):
-    sql = f"SELECT * FROM items WHERE id = %s;"
-    cursor.execute(sql, (id,))
-    item = cursor.fetchone()
-    return jsonify(item)
-
+    item = Item.query.get(id)
+    return jsonify(item_schema.dump(item))
 
 
 @items.route("/<int:id>", methods=["PUT", "PATCH"])
 def item_update(id):
-    sql= "UPDATE items SET name = %s where id = %s;"
-    cursor.execute(sql, (request.json["name"], id))
-    connection.commit()
+    items = Item.query.filter_by(id=id)
+    item_fields = item_schema.load(request.json)
+    items.update(item_fields)
+    db.session.commit()
     
-    sql = "SELECT * FROM items where id = %s;"
-    cursor.execute(sql, (id,))
-    items = cursor.fetchone()
-    return jsonify(items)
+    return jsonify(item_schema.dump(items[0]))
     
 
 @items.route("/<int:id>", methods=["DELETE"])
 def item_delete(id):
-    sql = "DELETE FROM ITEMS where id = %s;"
-    cursor.execute(sql, (id,))
-    item = cursor.fetchone()
+    item = Item.query.get(id)
+    db.session.delete(item)
+    db.session.commit()
     
-    if item:
-        sql = "DELETE FROM items where id = %s;"
-        cursor.execute(sql, (id,))
-        connection.commit()
-        
-    return jsonify(item)
+    return jsonify(item_schema.dump(item))
